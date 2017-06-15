@@ -102,12 +102,11 @@ RUN \
     mkdir -p /etc/nginx && \
     cat modsecurity.conf-recommended  > /etc/nginx/modsecurity.conf && \
     echo "#### Get Mod security configs ####" && \
-    wget https://github.com/SpiderLabs/owasp-modsecurity-crs/tarball/master -O owasp-modsecurity-crs.tar.gz && \
+    wget https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/v2.2.6.tar.gz -O owasp-modsecurity-crs.tar.gz && \
     tar -xvzf owasp-modsecurity-crs.tar.gz && \
-    CRS_DIR=$(find . -type d -name SpiderLabs-owasp-modsecurity-crs*) && \
-    cat ${CRS_DIR}/modsecurity_crs_10_setup.conf.example >> /etc/nginx/modsecurity.conf && \
-    cat ${CRS_DIR}/base_rules/modsecurity_*.conf >> /etc/nginx/modsecurity.conf && \
-    cp ${CRS_DIR}/base_rules/*.data /etc/nginx/ && \
+    cat ./owasp-modsecurity-crs-2.2.6/modsecurity_crs_10_setup.conf.example >> /etc/nginx/modsecurity.conf && \
+    cat ./owasp-modsecurity-crs-2.2.6/base_rules/modsecurity_*.conf >> /etc/nginx/modsecurity.conf && \
+    cp ./owasp-modsecurity-crs-2.2.6/base_rules/*.data /etc/nginx/ && \
     cp ModSecurity/unicode.mapping /etc/nginx/unicode.mapping && \
     echo "#### Compile Nginx ####" && \
     wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
