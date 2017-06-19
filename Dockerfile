@@ -1,6 +1,6 @@
 FROM alpine:3.4
 
-MAINTAINER dan78uk
+MAINTAINER xibitdigital
 
 # Set working dir
 ENV WORKING_DIRECTORY=/opt/build
@@ -143,12 +143,8 @@ RUN apk add openssl && \
     rm -rf /etc/nginx/conf.d/* && \
     mkdir -p /etc/nginx/external
 ADD nginx.conf /etc/nginx/nginx.conf
-ADD basic.conf /etc/nginx/conf.d/basic.conf
 ADD ssl.conf /etc/nginx/conf.d/ssl.conf
 RUN sed -i 's/access_log.*/access_log \/dev\/stdout;/g' /etc/nginx/nginx.conf; \
     sed -i 's/error_log.*/error_log \/dev\/stdout info;/g' /etc/nginx/nginx.conf;
-ADD entrypoint.sh /opt/entrypoint.sh
-RUN chmod a+x /opt/entrypoint.sh
-ENTRYPOINT ["/opt/entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]
