@@ -12,6 +12,7 @@ ENV LANG C.UTF-8
 ENV LC_ALL=C
 ENV NGINX_VERSION=1.11.1
 ENV MODSEC_VERSION=2.9.1
+ENV OWASP_CRS_VERSION=2.2.6
 ENV NGINX_CONFIG_BASE="\
 	--prefix=/etc/nginx \
 	--sbin-path=/usr/sbin/nginx \
@@ -102,11 +103,11 @@ RUN \
     mkdir -p /etc/nginx && \
     cat modsecurity.conf-recommended  > /etc/nginx/modsecurity.conf && \
     echo "#### Get Mod security configs ####" && \
-    wget https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/v2.2.6.tar.gz -O owasp-modsecurity-crs.tar.gz && \
+    wget https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/v${OWASP_CRS_VERSION}.tar.gz -O owasp-modsecurity-crs.tar.gz && \
     tar -xvzf owasp-modsecurity-crs.tar.gz && \
-    cat ./owasp-modsecurity-crs-2.2.6/modsecurity_crs_10_setup.conf.example >> /etc/nginx/modsecurity.conf && \
-    cat ./owasp-modsecurity-crs-2.2.6/base_rules/modsecurity_*.conf >> /etc/nginx/modsecurity.conf && \
-    cp ./owasp-modsecurity-crs-2.2.6/base_rules/*.data /etc/nginx/ && \
+    cat ./owasp-modsecurity-crs-${OWASP_CRS_VERSION}/modsecurity_crs_10_setup.conf.example >> /etc/nginx/modsecurity.conf && \
+    cat ./owasp-modsecurity-crs-${OWASP_CRS_VERSION}/base_rules/modsecurity_*.conf >> /etc/nginx/modsecurity.conf && \
+    cp ./owasp-modsecurity-crs-${OWASP_CRS_VERSION}/base_rules/*.data /etc/nginx/ && \
     cp ModSecurity/unicode.mapping /etc/nginx/unicode.mapping && \
     echo "#### Compile Nginx ####" && \
     wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
@@ -143,7 +144,9 @@ RUN apk add openssl && \
     rm -rf /etc/nginx/conf.d/* && \
     mkdir -p /etc/nginx/external
 ADD nginx.conf /etc/nginx/nginx.conf
-ADD ssl.conf /etc/nginx/conf.d/ssl.conf
+ADD basic.conf /etc/nginx/basic.conf
+ADD ssl.conf /etc/nginx/ssl.conf
+
 RUN sed -i 's/access_log.*/access_log \/dev\/stdout;/g' /etc/nginx/nginx.conf; \
     sed -i 's/error_log.*/error_log \/dev\/stdout info;/g' /etc/nginx/nginx.conf;
 
