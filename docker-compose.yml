@@ -4,7 +4,7 @@ services:
   test:
     image: xibitdigital/nginx-ssl-mod-security
     volumes:
-      - "./index.html:/usr/share/nginx/html/index.html"
-      - "./test.conf:/etc/nginx/conf.d/test.conf"
+      - "./test/index.html:/usr/share/nginx/html/index.html"
+      - "./test/test.conf:/etc/nginx/conf.d/test.conf"
     ports:
       - "80:80"
