@@ -9,6 +9,10 @@ This Dockerfile gives you a ready to use secured production Nginx server, with p
     -v $EXT_DIR:/etc/nginx/conf.d/ \
     nginx-mod_security
 
+## Example app
+You can test a sample solution running docker-compose
+
+
 ## Based on
 
 This Dockerfile is based on the Alpine Official Image.
