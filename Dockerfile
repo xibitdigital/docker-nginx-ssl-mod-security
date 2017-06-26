@@ -118,6 +118,10 @@ RUN \
     make install && \
     rm /etc/nginx/nginx.conf && \
     cd .. && \
+    apk add openssl && \
+    rm -rf /etc/nginx/conf.d/* && \
+		ln -sf /dev/stdout /var/log/nginx/access.log &&\
+    ln -sf /dev/stderr /var/log/nginx/error.log &&\
     echo "#### Clean solution ####" && \
     apk del \
       *.dev \
@@ -132,22 +136,18 @@ RUN \
       nginx-${NGINX_VERSION} \
       owasp-modsecurity-crs.tar.gz
 
-
 # Set workdir
 WORKDIR /etc/nginx
+
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY basic.conf /etc/nginx/basic.conf
+COPY ssl.conf /etc/nginx/ssl.conf
 
 # Check Nginx installation
 RUN nginx -V
 
-# Enable basic configurations and import of external configurations
-RUN apk add openssl && \
-    rm -rf /etc/nginx/conf.d/* && \
-    mkdir -p /etc/nginx/external
-ADD nginx.conf /etc/nginx/nginx.conf
-ADD basic.conf /etc/nginx/basic.conf
-ADD ssl.conf /etc/nginx/ssl.conf
+EXPOSE 80
 
-RUN sed -i 's/access_log.*/access_log \/dev\/stdout;/g' /etc/nginx/nginx.conf; \
-    sed -i 's/error_log.*/error_log \/dev\/stdout info;/g' /etc/nginx/nginx.conf;
+STOPSIGNAL SIGTERM
 
 CMD ["nginx", "-g", "daemon off;"]
